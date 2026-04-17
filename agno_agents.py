@@ -1,39 +1,20 @@
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.tools.website import WebsiteTools
-import json
 import os
+import json
+import requests
 
-# 1. Product & Sourcing Agent (Agno)
+# 1. Product Agent using Gemini 2.5 Flash
 product_agent = Agent(
-    name="OmniSourcing",
-    model=Gemini(id="gemini-2.0-flash"),
+    name="OmniSourcing-v2.5",
+    model=Gemini(id="gemini-2.5-flash"), 
     instructions=[
-        "Search for the best GPS trackers for bikes on AliExpress/Alibaba.",
-        "Filter for rating > 4.7 and high sales volume.",
-        "Return the product data in JSON format."
+        "Search for 'GPS Tracker for Bike/Motorcycle' on AliExpress.",
+        "Select the top-rated item with > 5000 orders.",
+        "Extract: Title, Price, Key Features, and Image URL.",
+        "Save the result to 'product_config.json'."
     ],
     tools=[WebsiteTools()],
     show_tool_calls=True
 )
-
-# 2. Marketing & LP Architect Agent
-marketing_agent = Agent(
-    name="OmniGrowth",
-    model=Gemini(id="gemini-2.0-flash"),
-    instructions=[
-        "Create high-conversion copy for the selected product.",
-        "Define 15 variations of the main headline focusing on security.",
-        "Suggest lifestyle image prompts for Midjourney."
-    ]
-)
-
-deployment_agent = Agent(
-    name="OmniDeploy",
-    instructions=["Take the production folder and deploy it to Netlify using the provided tools."],
-    show_tool_calls=True
-)
-
-if __name__ == "__main__":
-    print("--- OmniSourcing ---")
-    # product_agent.print_response("Find the top selling bike GPS tracker on AliExpress today.")
